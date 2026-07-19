@@ -1,0 +1,6 @@
+{
+  "name": "오늘의 날씨",
+  "description": "실시간 날씨 정보와 AI 맞춤형 의상 및 활동 추천을 제공하는 스마트 날씨 가이드",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

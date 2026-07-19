@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Rain drop falling animation */
+@keyframes rain {
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 0.8;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(105vh) scaleY(0.8);
+    opacity: 0;
+  }
+}
+
+/* Snowflake drifting animation */
+@keyframes snow {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(50vh) translateX(25px) rotate(180deg);
+  }
+  100% {
+    transform: translateY(105vh) translateX(-10px) rotate(360deg);
+  }
+}
+
+/* Gentle floating cloud/particles animation */
+@keyframes float-slow {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-15px) translateX(15px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+/* Thunderstorm Lightning flash simulation */
+@keyframes lightning-flash {
+  0%, 94%, 98%, 100% {
+    opacity: 0;
+  }
+  95%, 97% {
+    opacity: 0.85;
+  }
+  96% {
+    opacity: 0.3;
+  }
+}
+
