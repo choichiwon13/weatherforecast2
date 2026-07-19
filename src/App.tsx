@@ -30,6 +30,8 @@ const POPULAR_COUNTRIES = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<"city" | "national">("city");
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isNationalDemoMode, setIsNationalDemoMode] = useState(false);
   
   // City weather states
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,20 +47,216 @@ export default function App() {
   const [nationalLoading, setNationalLoading] = useState(false);
   const [nationalError, setNationalError] = useState<string | null>(null);
 
+  // Client-side fallback weather data generator for fully offline or static-hosted deployments (e.g., Vercel)
+  const getClientFallbackWeather = (city: string): WeatherData => {
+    const normalizedCity = city.trim();
+    const lowercase = normalizedCity.toLowerCase();
+    
+    let cityName = normalizedCity;
+    let country = "South Korea";
+    let temp = 24.5;
+    let condition = "부분적으로 흐림";
+    let conditionCode = "cloudy";
+    let humidity = 65;
+    let wind = 8.5;
+    let uv = 5;
+    let pm2_5 = 15;
+    let pm10 = 35;
+
+    if (lowercase.includes("seoul") || lowercase.includes("서울")) {
+      cityName = "서울";
+      country = "대한민국";
+      temp = 26.8;
+      condition = "맑음";
+      conditionCode = "sunny";
+      humidity = 60;
+      wind = 6.2;
+      uv = 6.5;
+      pm2_5 = 12;
+      pm10 = 28;
+    } else if (lowercase.includes("busan") || lowercase.includes("부산")) {
+      cityName = "부산";
+      country = "대한민국";
+      temp = 25.2;
+      condition = "구름 많음";
+      conditionCode = "cloudy";
+      humidity = 70;
+      wind = 14.8;
+      uv = 4.0;
+      pm2_5 = 14;
+      pm10 = 32;
+    } else if (lowercase.includes("jeju") || lowercase.includes("제주")) {
+      cityName = "제주";
+      country = "대한민국";
+      temp = 27.5;
+      condition = "흐리고 비";
+      conditionCode = "rainy";
+      humidity = 85;
+      wind = 18.2;
+      uv = 2.0;
+      pm2_5 = 8;
+      pm10 = 18;
+    } else if (lowercase.includes("tokyo") || lowercase.includes("도쿄")) {
+      cityName = "도쿄";
+      country = "일본";
+      temp = 28.0;
+      condition = "맑음";
+      conditionCode = "sunny";
+      humidity = 55;
+      wind = 7.5;
+      uv = 8.0;
+      pm2_5 = 11;
+      pm10 = 25;
+    } else if (lowercase.includes("new york") || lowercase.includes("뉴욕")) {
+      cityName = "뉴욕";
+      country = "미국";
+      temp = 22.4;
+      condition = "흐리고 가끔 비";
+      conditionCode = "rainy";
+      humidity = 78;
+      wind = 11.2;
+      uv = 3.0;
+      pm2_5 = 18;
+      pm10 = 42;
+    } else if (lowercase.includes("paris") || lowercase.includes("파리")) {
+      cityName = "파리";
+      country = "프랑스";
+      temp = 20.5;
+      condition = "구름 많음";
+      conditionCode = "cloudy";
+      humidity = 60;
+      wind = 9.0;
+      uv = 4.5;
+      pm2_5 = 10;
+      pm10 = 22;
+    }
+
+    const dateStr = new Date().toISOString().split("T")[0];
+    const timeStr = new Date().toTimeString().slice(0, 5);
+
+    return {
+      location: {
+        name: cityName,
+        country: country,
+        localtime: `${dateStr} ${timeStr}`
+      },
+      current: {
+        temp_c: temp,
+        feelslike_c: temp + (humidity > 70 ? 2 : 0),
+        condition: condition,
+        condition_code: conditionCode,
+        wind_kph: wind,
+        humidity: humidity,
+        uv: uv,
+        pm2_5: pm2_5,
+        pm10: pm10
+      },
+      forecast: [
+        {
+          date: dateStr,
+          day_of_week: "오늘",
+          maxtemp_c: temp + 3,
+          mintemp_c: temp - 4,
+          condition: condition,
+          condition_code: conditionCode
+        },
+        {
+          date: new Date(Date.now() + 86400000).toISOString().split("T")[0],
+          day_of_week: "내일",
+          maxtemp_c: temp + 2,
+          mintemp_c: temp - 5,
+          condition: conditionCode === "sunny" ? "구름 많음" : "맑음",
+          condition_code: conditionCode === "sunny" ? "cloudy" : "sunny"
+        },
+        {
+          date: new Date(Date.now() + 172800000).toISOString().split("T")[0],
+          day_of_week: "모레",
+          maxtemp_c: temp + 1,
+          mintemp_c: temp - 3,
+          condition: "흐림",
+          condition_code: "cloudy"
+        }
+      ],
+      ai_insights: {
+        summary: `현재 ${cityName}의 날씨는 기온 ${temp}°C에 ${condition} 상태입니다. 야외 활동과 일상 생활에 적합한 기상 여건이 조성되어 있습니다.`,
+        clothing: ["편안한 면 티셔츠", "가벼운 가디건", "청바지"],
+        activities: ["가벼운 동네 산책", "전망 좋은 카페 방문"],
+        health: "야외 자외선 수치와 온습도를 확인하시고 편안한 겉옷을 준비하세요."
+      },
+      yesterday_comparison: {
+        temp_diff_c: 1.2,
+        summary: `어제보다 기온이 약 1.2°C 높으며 선선한 바람이 불어 기분 좋은 하루입니다.`
+      },
+      tomorrow_prediction: {
+        temp_min: Math.round(temp - 4),
+        temp_max: Math.round(temp + 2),
+        condition: condition,
+        condition_code: conditionCode,
+        uv: Math.round(uv),
+        humidity: humidity,
+        wind_kph: wind,
+        pm2_5: pm2_5,
+        pm10: pm10,
+        analysis: `내일은 오늘과 기조가 유사하지만 오후 들어 바람이 약간 강해질 수 있어 쾌적한 보온이 권장됩니다.`,
+        morning_temp: Math.round(temp - 3),
+        afternoon_temp: Math.round(temp + 1),
+        evening_temp: Math.round(temp - 1),
+        morning_condition: "구름 조금",
+        afternoon_condition: condition,
+        evening_condition: "맑아짐"
+      }
+    };
+  };
+
+  const getClientFallbackNational = (country: string): NationalWeatherData => {
+    return {
+      country: country,
+      average_temp_c: 23.4,
+      average_humidity: 65,
+      average_pm2_5: 18,
+      dominant_condition: "맑음",
+      dominant_condition_code: "sunny",
+      cities: [
+        { name: "서울", temp_c: 25, condition: "맑음", condition_code: "sunny" },
+        { name: "부산", temp_c: 24, condition: "구름 많음", condition_code: "cloudy" },
+        { name: "제주", temp_c: 26, condition: "흐림", condition_code: "cloudy" },
+        { name: "대구", temp_c: 27, condition: "맑음", condition_code: "sunny" },
+        { name: "인천", temp_c: 23, condition: "맑음", condition_code: "sunny" },
+        { name: "광주", temp_c: 25, condition: "구름 많음", condition_code: "cloudy" }
+      ],
+      ai_summary: `${country} 전역이 전반적으로 고기압의 영향을 받아 온화하고 기분 좋은 대기 상태를 유지하고 있습니다. 일교차에 유의하며 건강한 일상을 계획해 보세요.`
+    };
+  };
+
   // Fetch weather data for city
   const fetchWeather = async (cityToFetch: string) => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(`/api/weather?city=${encodeURIComponent(cityToFetch)}`);
+      
+      // If Vercel or other hosting returns 404/not ok, trigger client-side fallback
       if (!response.ok) {
-        throw new Error("날씨 데이터를 불러오지 못했습니다. 도시 이름을 영어 또는 국문으로 정확히 기입해보세요.");
+        throw new Error("서버에서 기상 데이터를 조회하지 못했습니다. 데모 모드로 안전하게 예측 정보를 불러옵니다.");
       }
-      const data: WeatherData = await response.json();
+      
+      const text = await response.text();
+      let data: WeatherData;
+      try {
+        data = JSON.parse(text);
+      } catch (jsonErr) {
+        throw new Error("올바르지 않은 응답 데이터 포맷입니다. 데모 모드로 자동 전환합니다.");
+      }
+      
       setWeatherData(data);
       setCurrentCity(data.location.name);
+      setIsDemoMode(false);
     } catch (err: any) {
-      setError(err.message || "날씨 정보를 읽어오는 도중 서버 연결에 실패했습니다.");
+      console.warn("API Error, using custom client fallback data:", err);
+      const fallback = getClientFallbackWeather(cityToFetch);
+      setWeatherData(fallback);
+      setCurrentCity(fallback.location.name);
+      setIsDemoMode(true);
     } finally {
       setLoading(false);
     }
@@ -71,13 +269,25 @@ export default function App() {
     try {
       const response = await fetch(`/api/weather/national?country=${encodeURIComponent(countryToFetch)}`);
       if (!response.ok) {
-        throw new Error("전국 평균 날씨 데이터를 불러오지 못했습니다. 국가 이름을 한글이나 영문으로 정확히 입력해보세요.");
+        throw new Error("서버에서 전국 평균 분석 데이터를 조회하지 못했습니다. 데모 모드로 분석을 시뮬레이션합니다.");
       }
-      const data: NationalWeatherData = await response.json();
+      const text = await response.text();
+      let data: NationalWeatherData;
+      try {
+        data = JSON.parse(text);
+      } catch (jsonErr) {
+        throw new Error("올바르지 않은 국가 데이터 포맷입니다. 데모 모드로 자동 전환합니다.");
+      }
+      
       setNationalData(data);
       setCurrentCountry(data.country);
+      setIsNationalDemoMode(false);
     } catch (err: any) {
-      setNationalError(err.message || "전국 날씨 정보를 분석하는 도중 오류가 발생했습니다.");
+      console.warn("National API Error, using custom client fallback:", err);
+      const fallback = getClientFallbackNational(countryToFetch);
+      setNationalData(fallback);
+      setCurrentCountry(fallback.country);
+      setIsNationalDemoMode(true);
     } finally {
       setNationalLoading(false);
     }
@@ -175,7 +385,14 @@ export default function App() {
               <CloudSun className="text-blue-500 animate-pulse" size={28} />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-800">오늘의 날씨</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl md:text-2xl font-black tracking-tight text-slate-800">오늘의 날씨</h1>
+                {((activeTab === "city" && isDemoMode) || (activeTab === "national" && isNationalDemoMode)) && (
+                  <span className="text-[10px] bg-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full shadow-xs animate-pulse border border-amber-400">
+                    실시간 데모 모드
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">AI Weather Analytics</p>
             </div>
           </div>
