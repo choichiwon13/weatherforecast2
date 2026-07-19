@@ -13,21 +13,21 @@ export const WeatherDetails: React.FC<WeatherDetailsProps> = ({ current }) => {
     if (val <= 15) return { text: "좋음", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" };
     if (val <= 35) return { text: "보통", color: "text-blue-500 bg-blue-500/10 border-blue-500/20" };
     if (val <= 75) return { text: "나쁨", color: "text-amber-500 bg-amber-500/10 border-amber-500/20" };
-    return { text: "매우나쁨", color: "text-rose-500 bg-rose-500/10 border-rose-500/20" };
+    return { text: "매우 나쁨", color: "text-rose-500 bg-rose-500/10 border-rose-500/20" };
   };
 
   const getPm10Status = (val: number) => {
     if (val <= 30) return { text: "좋음", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" };
     if (val <= 80) return { text: "보통", color: "text-blue-500 bg-blue-500/10 border-blue-500/20" };
     if (val <= 150) return { text: "나쁨", color: "text-amber-500 bg-amber-500/10 border-amber-500/20" };
-    return { text: "매우나쁨", color: "text-rose-500 bg-rose-500/10 border-rose-500/20" };
+    return { text: "매우 나쁨", color: "text-rose-500 bg-rose-500/10 border-rose-500/20" };
   };
 
   const getUvStatus = (val: number) => {
     if (val <= 2) return { text: "낮음", color: "text-emerald-500" };
     if (val <= 5) return { text: "보통", color: "text-blue-500" };
     if (val <= 7) return { text: "높음", color: "text-amber-500" };
-    if (val <= 10) return { text: "매우높음", color: "text-rose-500" };
+    if (val <= 10) return { text: "매우 높음", color: "text-rose-500" };
     return { text: "위험", color: "text-purple-500 animate-pulse" };
   };
 

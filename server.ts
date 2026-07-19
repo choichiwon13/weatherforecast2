@@ -337,14 +337,17 @@ ${searchResultText}
 - average_temp_c: 취합된 주요 도시 기온들의 평균값 (숫자)
 - average_humidity: 취합된 주요 도시 습도들의 평균값 (숫자, 0~100 사이)
 - average_pm2_5: 취합된 주요 도시 초미세먼지 농도 평균값 (숫자, 0~150 사이)
-- dominant_condition: 오늘 이 국가의 전반적이고 대표적인 날씨 설명 (한글, 예: '대체로 맑음', '전국적으로 가을비', '대부분 흐림' 등)
+- dominant_condition: 오늘 이 국가의 전반적이고 대표적인 날씨 설명 (한글, 예: '맑음', '구름 조금', '구름 많음', '흐림', '비', '눈', '소나기', '한때 비', '천둥번개' 등 가장 자연스러운 한국어로 표현)
 - dominant_condition_code: 'sunny', 'cloudy', 'rainy', 'snowy', 'thunderstorm' 중 대표 기상 상태에 가장 적합한 하나를 선택
 - cities: 최소 6개 이상의 주요 도시들의 개별 날씨 목록
   * name: 도시 이름 (한글, 예: '서울', '부산', '대구', '인천', '광주', '대전', '울산', '제주' 등)
   * temp_c: 해당 도시의 기온 (숫자)
-  * condition: 해당 도시의 기상 상태 (한글, 예: '맑음', '흐림', '비' 등)
+  * condition: 해당 도시의 기상 상태 (어색한 영어 직역이 아닌 기상청 기준의 자연스러운 한글, 예: '맑음', '구름 조금', '구름 많음', '흐림', '비', '소나기', '눈' 등)
   * condition_code: 'sunny', 'cloudy', 'rainy', 'snowy', 'thunderstorm' 중 해당 도시 날씨에 가장 적합한 것 선택
-- ai_summary: 국가 전체의 종합적인 기후 요약 리포트와 하루 생활 권장 제안 (한국어로 상냥하고 정교하게 서술)`;
+- ai_summary: 국가 전체의 종합적인 기후 요약 리포트와 하루 생활 권장 제안 (한국어로 대단히 자연스럽고 전문적이며 다정한 기상캐스터 말투로 서술)
+
+[번역 및 표현 규칙]:
+절대 '부분적으로 흐림', '패치 비', '샤워' 같은 기계적이고 직역된 영문 번역 표현을 그대로 사용하지 마십시오. 반드시 한국인에게 익숙하고 친숙한 기상 용어(예: '구름 조금', '구름 많음', '한때 소나기', '비', '맑음')로 가공 및 번역하여 제공해주십시오.`;
 
     const formatResponse = await ai.models.generateContent({
       model: "gemini-3.5-flash",
@@ -534,17 +537,20 @@ ${searchResultText}
 - current.temp_c, feelslike_c, wind_kph, humidity, uv, pm2_5, pm10: 구체적인 실제 숫자로 채우기 (PM2.5는 0~150 사이, PM10은 0~200 사이)
 - current.condition_code, forecast[i].condition_code: 'sunny', 'cloudy', 'rainy', 'snowy', 'thunderstorm' 중 기상에 맞는 하나를 영어 소문자 그대로 채우기
 - forecast: 오늘을 포함하여 3일간의 구체적인 예보 목록
-- ai_insights: 분석된 라이프스타일 가이드 (한국어로 다정하고 성실한 톤으로 서술)
+- ai_insights: 분석된 라이프스타일 가이드 (한국어로 다정하고 성실하며 자연스러운 톤으로 서술)
 - yesterday_comparison: 어제 날씨와 오늘 날씨의 기온 및 상태를 구체적으로 비교한 분석 데이터
   * temp_diff_c: 어제와 비교한 기온 차이 (오늘 온도 - 어제 온도, 양수/음수/영 소수점 포함 숫자)
   * summary: 어제 날씨 대비 오늘 기상 상황을 비교하는 한국어 친절한 한 줄 요약 (예: '어제보다 2.3°C 높고 미세먼지가 걷혀 한결 쾌적합니다.')
 - tomorrow_prediction: 내일 날씨에 대한 정밀한 AI 분석 및 시간대별 예측 정보
   * temp_min, temp_max, uv, humidity, wind_kph, pm2_5, pm10: 구체적인 숫자로 예측치 채우기
-  * condition: 내일 전반의 기상 상태 한글 텍스트 (예: '맑은 후 오후 흐려짐')
+  * condition: 내일 전반의 기상 상태 한글 텍스트 (어색한 영어 직역이 아닌 기상청식 자연스러운 한글 표현 사용, 예: '맑음', '구름 조금', '구름 많음', '흐림', '비', '소나기' 등)
   * condition_code: 'sunny', 'cloudy', 'rainy', 'snowy', 'thunderstorm' 중 내일 날씨에 적합한 기상 코드 영어 소문자
   * analysis: 내일의 기상 상황을 상세히 설명하고 외출 또는 기상 대비를 조언해 주는 한국어 2-3문장 요약
   * morning_temp, afternoon_temp, evening_temp: 내일 아침, 오후, 저녁의 예상 기온(도씨 숫자)
-  * morning_condition, afternoon_condition, evening_condition: 내일 아침, 오후, 저녁의 예상 날씨 묘사 한글 (예: '맑음', '흐리고 한때 비')`;
+  * morning_condition, afternoon_condition, evening_condition: 내일 아침, 오후, 저녁의 예상 날씨 묘사 한글 (기상청식 표현 사용, 예: '맑음', '구름 조금', '흐림', '한때 소나기', '비' 등)
+
+[번역 및 표현 규칙]:
+절대 '부분적으로 흐림', '패치 비', '근처 패치 비', '샤워' 같은 기계적이고 직역된 영문 번역 표현을 그대로 사용하지 마십시오. 반드시 한국인에게 익숙하고 친숙한 기상 용어(예: '구름 조금', '구름 많음', '한때 소나기', '비', '맑음')로 가공 및 번역하여 제공해주십시오.`;
 
     const formatResponse = await ai.models.generateContent({
       model: "gemini-3.5-flash",
@@ -573,11 +579,11 @@ ${searchResultText}
 
 // Helper functions for WeatherAPI data conversion
 function getConditionCodeFromText(text: string): string {
-  const korean = text.toLowerCase();
-  if (korean.includes("맑음") || korean.includes("태양") || korean.includes("화창")) return "sunny";
-  if (korean.includes("비") || korean.includes("소나기") || korean.includes("강우")) return "rainy";
-  if (korean.includes("눈") || korean.includes("우박") || korean.includes("진눈깨비")) return "snowy";
-  if (korean.includes("번개") || korean.includes("뇌우") || korean.includes("천둥")) return "thunderstorm";
+  const norm = text.toLowerCase();
+  if (norm.includes("맑음") || norm.includes("태양") || norm.includes("화창") || norm.includes("sunny") || norm.includes("clear") || norm.includes("hot")) return "sunny";
+  if (norm.includes("비") || norm.includes("소나기") || norm.includes("강우") || norm.includes("rain") || norm.includes("drizzle") || norm.includes("shower")) return "rainy";
+  if (norm.includes("눈") || norm.includes("우박") || norm.includes("진눈깨비") || norm.includes("snow") || norm.includes("sleet") || norm.includes("ice") || norm.includes("blizzard")) return "snowy";
+  if (norm.includes("번개") || norm.includes("뇌우") || norm.includes("천둥") || norm.includes("thunder") || norm.includes("lightning") || norm.includes("storm")) return "thunderstorm";
   return "cloudy"; // Default condition
 }
 

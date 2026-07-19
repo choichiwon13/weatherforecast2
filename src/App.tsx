@@ -53,9 +53,9 @@ export default function App() {
     const lowercase = normalizedCity.toLowerCase();
     
     let cityName = normalizedCity;
-    let country = "South Korea";
+    let country = "대한민국";
     let temp = 24.5;
-    let condition = "부분적으로 흐림";
+    let condition = "구름 조금";
     let conditionCode = "cloudy";
     let humidity = 65;
     let wind = 8.5;
@@ -209,22 +209,115 @@ export default function App() {
   };
 
   const getClientFallbackNational = (country: string): NationalWeatherData => {
+    const norm = country.trim().toLowerCase();
+    
+    let resCountry = country;
+    let avgTemp = 24.5;
+    let avgHumid = 65;
+    let avgPm = 15;
+    let dominant = "맑음";
+    let dominantCode = "sunny";
+    let aiSummary = `${country} 전역이 전반적으로 고기압의 영향을 받아 온화하고 기분 좋은 대기 상태를 유지하고 있습니다. 일교차에 유의하며 건강한 일상을 계획해 보세요.`;
+    let cities = [
+      { name: "서울", temp_c: 25, condition: "맑음", condition_code: "sunny" },
+      { name: "부산", temp_c: 24, condition: "구름 많음", condition_code: "cloudy" },
+      { name: "제주", temp_c: 26, condition: "흐림", condition_code: "cloudy" },
+      { name: "대구", temp_c: 27, condition: "맑음", condition_code: "sunny" },
+      { name: "인천", temp_c: 23, condition: "맑음", condition_code: "sunny" },
+      { name: "광주", temp_c: 25, condition: "구름 많음", condition_code: "cloudy" }
+    ];
+
+    if (norm.includes("한국") || norm.includes("대한민국") || norm.includes("korea")) {
+      resCountry = "대한민국";
+      avgTemp = 26.5;
+      avgHumid = 75;
+      avgPm = 22;
+      dominant = "구름 많음";
+      dominantCode = "cloudy";
+      aiSummary = "대한민국 전역은 현재 구름이 다소 끼어 있으나 야외 활동하기에 쾌적한 온도를 유지하고 있습니다. 자외선과 습도가 적절한 대기 조건이 지속되고 있습니다.";
+      cities = [
+        { name: "서울", temp_c: 26, condition: "구름 많음", condition_code: "cloudy" },
+        { name: "부산", temp_c: 25, condition: "맑음", condition_code: "sunny" },
+        { name: "제주", temp_c: 27, condition: "맑음", condition_code: "sunny" },
+        { name: "인천", temp_c: 24, condition: "흐림", condition_code: "cloudy" },
+        { name: "대구", temp_c: 28, condition: "맑음", condition_code: "sunny" },
+        { name: "광주", temp_c: 26, condition: "구름 많음", condition_code: "cloudy" }
+      ];
+    } else if (norm.includes("일본") || norm.includes("japan")) {
+      resCountry = "일본";
+      avgTemp = 27.2;
+      avgHumid = 80;
+      avgPm = 14;
+      dominant = "맑고 다소 무더움";
+      dominantCode = "sunny";
+      aiSummary = "일본 전국은 전반적으로 높은 기온과 높은 대기 습도를 유지하고 있어 체감 온도가 약간 높을 수 있습니다. 충분한 보습과 수분 섭취가 동반되어야 안전합니다.";
+      cities = [
+        { name: "도쿄", temp_c: 28, condition: "맑음", condition_code: "sunny" },
+        { name: "오사카", temp_c: 29, condition: "맑음", condition_code: "sunny" },
+        { name: "삿포로", temp_c: 22, condition: "선선함", condition_code: "sunny" },
+        { name: "후쿠오카", temp_c: 27, condition: "흐림", condition_code: "cloudy" },
+        { name: "오키나와", temp_c: 31, condition: "소나기", condition_code: "rainy" },
+        { name: "교토", temp_c: 28, condition: "맑음", condition_code: "sunny" }
+      ];
+    } else if (norm.includes("미국") || norm.includes("usa") || norm.includes("united states")) {
+      resCountry = "미국";
+      avgTemp = 24.8;
+      avgHumid = 58;
+      avgPm = 11;
+      dominant = "화창함";
+      dominantCode = "sunny";
+      aiSummary = "미국 전역은 쾌적하고 화창한 햇살이 비치는 가운데 서부와 동부를 아울러 대기 질이 대단히 우수하여 주말 야외 스포츠나 피크닉에 대단히 이상적인 하루입니다.";
+      cities = [
+        { name: "뉴욕", temp_c: 25, condition: "맑음", condition_code: "sunny" },
+        { name: "로스앤젤레스", temp_c: 27, condition: "맑음", condition_code: "sunny" },
+        { name: "시카고", temp_c: 23, condition: "구름 많음", condition_code: "cloudy" },
+        { name: "마이애미", temp_c: 30, condition: "소나기", condition_code: "rainy" },
+        { name: "샌프란시스코", temp_c: 19, condition: "선선함", condition_code: "sunny" },
+        { name: "시애틀", temp_c: 21, condition: "흐림", condition_code: "cloudy" }
+      ];
+    } else if (norm.includes("프랑스") || norm.includes("france")) {
+      resCountry = "프랑스";
+      avgTemp = 22.5;
+      avgHumid = 55;
+      avgPm = 9;
+      dominant = "선선하고 맑음";
+      dominantCode = "sunny";
+      aiSummary = "프랑스는 매우 맑고 청량한 가을 바람 혹은 쾌적한 서풍의 지배를 받아 대기 오염 물질 수치가 최저로 유지되며 기분 좋은 하루가 지속될 예정입니다.";
+      cities = [
+        { name: "파리", temp_c: 21, condition: "맑음", condition_code: "sunny" },
+        { name: "마르세유", temp_c: 26, condition: "맑음", condition_code: "sunny" },
+        { name: "리옹", temp_c: 23, condition: "구름 조금", condition_code: "sunny" },
+        { name: "니스", temp_c: 27, condition: "맑음", condition_code: "sunny" },
+        { name: "낭트", temp_c: 20, condition: "구름 많음", condition_code: "cloudy" },
+        { name: "툴루즈", temp_c: 24, condition: "구름 조금", condition_code: "sunny" }
+      ];
+    } else if (norm.includes("영국") || norm.includes("uk") || norm.includes("united kingdom")) {
+      resCountry = "영국";
+      avgTemp = 18.2;
+      avgHumid = 72;
+      avgPm = 8;
+      dominant = "흐림";
+      dominantCode = "cloudy";
+      aiSummary = "영국 전역은 바다 안개와 상층운의 영향으로 대체로 흐리고 쌀쌀한 날씨가 펼쳐집니다. 실외 이동 시 보온을 위한 가디건과 가벼운 바람막이가 추천됩니다.";
+      cities = [
+        { name: "런던", temp_c: 19, condition: "구름 많음", condition_code: "cloudy" },
+        { name: "맨체스터", temp_c: 17, condition: "가랑비", condition_code: "rainy" },
+        { name: "에든버러", temp_c: 15, condition: "흐림", condition_code: "cloudy" },
+        { name: "버밍엄", temp_c: 18, condition: "구름 많음", condition_code: "cloudy" },
+        { name: "글래스고", temp_c: 14, condition: "흐리고 비", condition_code: "rainy" },
+        { name: "벨파스트", temp_c: 16, condition: "흐림", condition_code: "cloudy" }
+      ];
+    }
+
     return {
-      country: country,
-      average_temp_c: 23.4,
-      average_humidity: 65,
-      average_pm2_5: 18,
-      dominant_condition: "맑음",
-      dominant_condition_code: "sunny",
-      cities: [
-        { name: "서울", temp_c: 25, condition: "맑음", condition_code: "sunny" },
-        { name: "부산", temp_c: 24, condition: "구름 많음", condition_code: "cloudy" },
-        { name: "제주", temp_c: 26, condition: "흐림", condition_code: "cloudy" },
-        { name: "대구", temp_c: 27, condition: "맑음", condition_code: "sunny" },
-        { name: "인천", temp_c: 23, condition: "맑음", condition_code: "sunny" },
-        { name: "광주", temp_c: 25, condition: "구름 많음", condition_code: "cloudy" }
-      ],
-      ai_summary: `${country} 전역이 전반적으로 고기압의 영향을 받아 온화하고 기분 좋은 대기 상태를 유지하고 있습니다. 일교차에 유의하며 건강한 일상을 계획해 보세요.`
+      country: resCountry,
+      average_temp_c: avgTemp,
+      average_humidity: avgHumid,
+      average_pm2_5: avgPm,
+      dominant_condition: dominant,
+      dominant_condition_code: dominantCode,
+      cities: cities,
+      ai_summary: aiSummary
     };
   };
 
@@ -444,10 +537,10 @@ export default function App() {
                 <Search className="absolute left-4 text-slate-400 pointer-events-none" size={20} />
                 <input
                   type="text"
-                  placeholder="도시 이름으로 검색해보세요 (예: 서울, Jeju, Tokyo, Paris...)"
+                  placeholder="도시 이름 검색 (예: 서울, Jeju, Tokyo, 파리)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-28 py-3.5 bg-slate-50/50 rounded-2xl border border-transparent focus:border-slate-200/80 focus:bg-white/90 focus:outline-none text-sm font-semibold transition-all"
+                  className="w-full pl-12 pr-28 py-3.5 bg-slate-50/50 rounded-2xl border border-transparent focus:border-slate-200/80 focus:bg-white/90 focus:outline-none text-base font-semibold transition-all"
                 />
                 <button
                   type="submit"
@@ -587,10 +680,10 @@ export default function App() {
                 <Globe className="absolute left-4 text-slate-400 pointer-events-none" size={20} />
                 <input
                   type="text"
-                  placeholder="국가 이름으로 전국 기후 평균을 검색해보세요 (예: 대한민국, 일본, 미국, 프랑스...)"
+                  placeholder="국가 이름 검색 (예: 대한민국, 일본, 미국, 프랑스)"
                   value={nationalSearchQuery}
                   onChange={(e) => setNationalSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-28 py-3.5 bg-slate-50/50 rounded-2xl border border-transparent focus:border-indigo-200/80 focus:bg-white/90 focus:outline-none text-sm font-semibold transition-all"
+                  className="w-full pl-12 pr-28 py-3.5 bg-slate-50/50 rounded-2xl border border-transparent focus:border-indigo-200/80 focus:bg-white/90 focus:outline-none text-base font-semibold transition-all"
                 />
                 <button
                   type="submit"

@@ -14,7 +14,7 @@ export const NationalWeatherCard: React.FC<NationalWeatherCardProps> = ({ data }
     if (val <= 15) return { text: "좋음", color: "text-emerald-500 bg-emerald-500/10" };
     if (val <= 35) return { text: "보통", color: "text-blue-500 bg-blue-500/10" };
     if (val <= 75) return { text: "나쁨", color: "text-amber-500 bg-amber-500/10" };
-    return { text: "매우나쁨", color: "text-rose-500 bg-rose-500/10" };
+    return { text: "매우 나쁨", color: "text-rose-500 bg-rose-500/10" };
   };
 
   const pm25Info = getPm25Status(data.average_pm2_5);
@@ -90,7 +90,7 @@ export const NationalWeatherCard: React.FC<NationalWeatherCardProps> = ({ data }
             </span>
             <div className="flex items-baseline space-x-1.5">
               <span className="text-xl sm:text-2xl font-black tracking-tight">{Math.round(data.average_pm2_5)}</span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${pm25Info.color} text-white scale-90`}>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${pm25Info.color} scale-90 border border-current/20`}>
                 {pm25Info.text}
               </span>
             </div>
